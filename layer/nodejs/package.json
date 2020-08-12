@@ -4,6 +4,6 @@
   "version": "0.1.0",
   "dependencies": {
     "dynamodb-marshaler": "^2.0.0",
-    "papaparse": "^4.1.4"
+    "papaparse": "^5.2.0"
   }
 }

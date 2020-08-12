@@ -1,6 +1,6 @@
 {
-    "tablename": "SIAMoviesHandleRequest",
-    "s3bucket": "ray-emr-multi-master",
-    "filename": "SIAMoviesHandleRequest-export.csv",
+    "tablename": "Movies",
+    "s3bucket": "serverless-hands-on",
+    "filename": "Movies-export.csv",
     "action": "dump"
 }

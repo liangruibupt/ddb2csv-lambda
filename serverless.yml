@@ -59,9 +59,9 @@ functions:
       inRegion: cn-north-1
       writeChunk: 500000
       inAction: describe
-      inTableName: SIAMoviesHandleRequest
-      outS3Bucket: s3://ray-emr-multi-master/results/SIAMoviesHandleRequest
-      outFileName: SIAMoviesHandleRequest-export.csv
+      inTableName: Movies
+      outS3Bucket: s3://serverless-hands-on/results/Movies
+      outFileName: Movies-export.csv
 
 resources:
   Resources:
