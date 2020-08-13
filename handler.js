@@ -80,10 +80,12 @@ var scanDynamoDB = function (query, stream, s3Bucket, s3Key, event, callback) {
         query.ExclusiveStartKey = data.LastEvaluatedKey;
         if (rowCount >= writeChunk) {
           // once the designated number of items has been read, write out to stream.
+          console.log('Do scanDynamoDB rowCount ', rowCount, ' ,writeCount ', writeCount);
           unparseData(data.LastEvaluatedKey, stream, s3Bucket, s3Key, event, callback);
         }
         scanDynamoDB(query, stream, s3Bucket, s3Key, event, callback);
       } else {
+        console.log('Do scanDynamoDB rowCount ', rowCount, ' ,writeCount ', writeCount);
         unparseData("File Written", stream, s3Bucket, s3Key, event, callback);
       }
     } else {
@@ -108,6 +110,7 @@ var unparseData = function (lastEvaluatedKey, stream, s3Bucket, s3Key, event, ca
   // reset write array. saves memory
   unMarshalledArray = [];
   writeCount += rowCount;
+  console.log('Do unparseData rowCount ', rowCount, ' ,writeCount ', writeCount);
   rowCount = 0;
 };
 
@@ -206,3 +209,4 @@ module.exports.hello = function(event, context, callback) {
   }
 
 };
+
