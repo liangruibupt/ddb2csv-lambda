@@ -6,6 +6,7 @@ var unmarshal = require("dynamodb-marshaler").unmarshal;
 var Papa = require("papaparse");
 var fs = require("fs");
 var crypto = require('crypto');
+var path = require('path');
 
 var headers = [];
 var unMarshalledArray = [];
@@ -32,13 +33,16 @@ function unifyInAction (inAction) {
 function random (howMany, chars) {
       chars = chars
         || 'abcdefghijklmnopqrstuwxyzABCDEFGHIJKLMNOPQRSTUWXYZ0123456789';
-    var rnd = crypto.randomBytes(howMany)
-        , value = new Array(howMany)
+    var value = new Array(howMany)
         , len = Math.min(256, chars.length)
-        , d = 256 / len
+        , maxUnbiased = 256 - (256 % len)
 
     for (var i = 0; i < howMany; i++) {
-          value[i] = chars[Math.floor(rnd[i] / d)]
+          var byte;
+          do {
+            byte = crypto.randomBytes(1)[0];
+          } while (byte >= maxUnbiased);
+          value[i] = chars[byte % len]
     };
 
     return value.join('');
@@ -193,7 +197,10 @@ module.exports.hello = function(event, context, callback) {
   if (doAction == 'dump' && !outFileName) {
     outFileName = random(32);
   }
-  var tempfile = '/tmp/' + outFileName;
+  // Sanitize the (possibly user-controlled) file name to prevent path traversal:
+  // reduce to its basename and strip any residual path separators / '..' sequences.
+  var safeFileName = path.basename(String(outFileName)).replace(/[\/\\]/g, '').replace(/\.\./g, '');
+  var tempfile = '/tmp/' + safeFileName;
   var stream = fs.createWriteStream(tempfile, { flags: 'a' });
   var outS3Bucket = options.s3bucket ? options.s3bucket : process.env.outS3Bucket;
 
